@@ -3,159 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Ulasan - PhotoDrive Cloud</title>
+    <title>Konsultasi WhatsApp - Gibran Drive</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #0b0f1a;
+            font-family: 'Inter', sans-serif;
+            background-color: #050508;
             color: white;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
-
         .glass-card {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 2.5rem;
+            padding: 2.5rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
-
-        input, textarea {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #25d366 !important;
-            outline: none;
-            box-shadow: 0 0 15px rgba(37, 211, 102, 0.2);
-        }
-
-        .btn-wa {
-            background: #25d366;
-            color: #075e54;
-            transition: all 0.3s ease;
-        }
-
-        .btn-wa:hover {
-            background: #128c7e;
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .input-field:focus {
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+        .label-text {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .btn-send {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            width: 100%;
+            padding: 1.25rem;
+            border-radius: 1.25rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .btn-send:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            filter: brightness(1.1);
         }
-
-        .back-link {
-            transition: all 0.3s ease;
+        .btn-back {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            color: rgba(255,255,255,0.3);
+            transition: color 0.3s;
         }
-        .back-link:hover {
-            color: #25d366;
-            transform: translateX(-5px);
-        }
-
-        /* Notifikasi Custom */
-        #notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #ef4444;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            transform: translateY(-100px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 100;
-        }
+        .btn-back:hover { color: white; }
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <!-- Notifikasi Ganti Alert -->
-    <div id="notification" class="flex items-center gap-3 shadow-2xl">
-        <i class="fas fa-exclamation-circle"></i>
-        <span id="notif-text">Mohon isi semua data!</span>
-    </div>
-
-    <div class="glass-card w-full max-w-md p-8 relative">
-        <a href="dashboard.html" class="back-link absolute top-8 left-8 text-gray-500 text-sm flex items-center gap-2 mb-6">
-            <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+    <div class="glass-card">
+        <!-- Tombol Kembali ke Dashboard -->
+        <a href="dashboard.html" class="btn-back" title="Kembali ke Dashboard">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
         </a>
 
-        <div class="text-center mb-8 mt-8">
-            <div class="inline-block p-4 rounded-2xl bg-green-500/10 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#25d366" viewBox="0 0 16 16">
-                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/10 rounded-2xl mb-4 border border-emerald-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
             </div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Kirim Ulasan</h2>
-            <p class="text-gray-400 text-sm mt-2">Masukan Anda sangat berarti bagi pengembangan PhotoDrive.</p>
+            <h1 class="text-3xl font-black tracking-tighter">KONSULTASI</h1>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Tim Support Gibran Drive</p>
         </div>
 
         <form id="waForm" class="space-y-5">
             <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Nama Lengkap</label>
-                <input type="text" id="nama" placeholder="Masukkan nama Anda" class="w-full px-4 py-4 rounded-xl outline-none" required>
+                <label class="label-text">Nama Lengkap</label>
+                <input type="text" id="name" class="input-field" placeholder="Masukkan nama Anda" required>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Nomor WhatsApp</label>
-                <input type="tel" id="nomor" placeholder="Contoh: 08123xxx" class="w-full px-4 py-4 rounded-xl outline-none" required>
+                <label class="label-text">Nomor WhatsApp</label>
+                <input type="tel" id="phone" class="input-field" placeholder="Contoh: 08123456789" required>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Ulasan Anda</label>
-                <textarea id="ulasan" rows="4" placeholder="Apa pendapat Anda tentang PhotoDrive?" class="w-full px-4 py-4 rounded-xl resize-none outline-none" required></textarea>
+                <label class="label-text">PIN Keamanan</label>
+                <input type="password" id="pin" class="input-field" placeholder="Masukkan PIN" required>
             </div>
 
-            <button type="button" onclick="kirimKeWA()" class="btn-wa w-full py-5 rounded-2xl font-black flex items-center justify-center gap-3 mt-6 shadow-lg uppercase tracking-widest text-sm">
-                Kirim via WhatsApp <i class="fab fa-whatsapp text-lg"></i>
+            <div>
+                <label class="label-text">Apa yang ingin dikonsultasikan?</label>
+                <textarea id="issue" rows="4" class="input-field" placeholder="Tuliskan keluhan atau pertanyaan Anda secara detail..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-send">
+                Kirim Sekarang
             </button>
         </form>
+
+        <p class="text-center text-[10px] text-slate-600 mt-6 font-medium uppercase tracking-tighter">
+            Pesan akan diteruskan otomatis ke <br> <span class="text-slate-400">+62 851-2333-2018</span>
+        </p>
     </div>
 
     <script>
-        function showNotif(msg) {
-            const notif = document.getElementById('notification');
-            const notifText = document.getElementById('notif-text');
-            notifText.innerText = msg;
-            notif.style.transform = "translateY(0)";
+        document.getElementById('waForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const pin = document.getElementById('pin').value;
+            const issue = document.getElementById('issue').value;
+
+            const adminNumber = "6285123332018";
+
+            const message = `*HALO ADMIN GIBRAN DRIVE*%0A` +
+                            `----------------------------------------%0A` +
+                            `*Nama:* ${name}%0A` +
+                            `*No. HP:* ${phone}%0A` +
+                            `*PIN:* ${pin}%0A` +
+                            `----------------------------------------%0A` +
+                            `*KEBUTUHAN KONSULTASI:*%0A` +
+                            `${issue}%0A` +
+                            `----------------------------------------%0A` +
+                            `_Pesan dikirim dari Formulir Web_`;
+
+            const waUrl = `https://wa.me/${adminNumber}?text=${message}`;
+            
+            const btn = e.target.querySelector('button');
+            btn.innerText = "MENGALIHKAN...";
+            btn.style.opacity = "0.7";
+            
             setTimeout(() => {
-                notif.style.transform = "translateY(-100px)";
-            }, 3000);
-        }
-
-        function kirimKeWA() {
-            const targetNo = "6285123332018"; // Nomor Admin
-            const nama = document.getElementById('nama').value;
-            const nomor = document.getElementById('nomor').value;
-            const ulasan = document.getElementById('ulasan').value;
-
-            if(!nama || !nomor || !ulasan) {
-                showNotif("Waduh, isi semua datanya dulu ya!");
-                return;
-            }
-
-            // Menyusun format pesan
-            const pesan = `*ULASAN PHOTODRIVE BARU*%0A` +
-                          `---------------------------%0A` +
-                          `*Nama:* ${nama}%0A` +
-                          `*No. WA:* ${nomor}%0A` +
-                          `*Ulasan:* ${ulasan}%0A` +
-                          `---------------------------%0A` +
-                          `_Dikirim via Dashboard PhotoDrive_`;
-
-            // Membuka URL WhatsApp
-            const url = `https://wa.me/${targetNo}?text=${pesan}`;
-            window.open(url, '_blank');
-        }
+                window.location.href = waUrl;
+            }, 800);
+        });
     </script>
 </body>
 </html>
