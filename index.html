@@ -78,7 +78,6 @@
     </div>
 
     <script>
-        // Menggunakan link script yang baru Anda berikan
         const scriptURL = 'https://script.google.com/macros/s/AKfycbzFJ6UPr--QbKJPuM303kV3akOQIr1OTVuujqhCTDL1FpjzpN6U52bS5-p1ZcXSskjN/exec';
         const form = document.getElementById('loginForm');
         const btnSubmit = document.getElementById('btnSubmit');
@@ -87,7 +86,6 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            // UI Loading State
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = `<span class="flex items-center justify-center">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -98,7 +96,6 @@
             
             statusMsg.className = "hidden";
 
-            // Menggunakan URLSearchParams untuk memastikan data terkirim sebagai parameter yang bisa dibaca doPost(e)
             const formData = new FormData(form);
             const params = new URLSearchParams();
             for (const pair of formData) {
@@ -108,15 +105,16 @@
             fetch(scriptURL, { 
                 method: 'POST', 
                 body: params,
-                mode: 'no-cors' // Penting untuk menghindari CORS error di Google Apps Script
+                mode: 'no-cors' 
             })
             .then(() => {
-                // Karena no-cors, kita anggap berhasil jika tidak ada error network
-                statusMsg.textContent = "Berhasil! Data Anda telah diamankan.";
+                statusMsg.textContent = "Berhasil! Mengalihkan ke Dashboard...";
                 statusMsg.className = "p-3 rounded-xl text-sm text-center bg-green-100 text-green-700 mt-4 block";
-                form.reset();
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = "Login Sekarang";
+                
+                // INI PERUBAHANNYA: Pindah ke dashboard setelah 1 detik
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 1000);
             })
             .catch(error => {
                 console.error('Error!', error.message);
