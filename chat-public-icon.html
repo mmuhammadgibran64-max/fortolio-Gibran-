@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Chat - Appwrite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 h-screen flex items-center justify-center p-4">
+
+    <div id="app" class="w-full max-w-md h-[650px] flex flex-col glass-morphism rounded-3xl shadow-2xl overflow-hidden relative border border-slate-200">
+        
+        <!-- HEADER DENGAN TOMBOL DASHBOARD LOKAL -->
+        <div class="bg-white p-5 border-b flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-bold text-slate-800 text-lg">Public Chat</h2>
+                    <div class="flex items-center gap-1.5">
+                        <span id="status-dot" class="w-2 h-2 bg-slate-400 rounded-full"></span>
+                        <span id="status-text" class="text-xs text-slate-500 italic">Menghubungkan...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOMBOL BALIK KE DASHBOARD.HTML -->
+            <a href="dashboard.html" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-xl text-xs font-semibold transition-all active:scale-95 border border-slate-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Dashboard
+            </a>
+        </div>
+
+        <div id="chat-window" class="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/50">
+             <div id="empty-state" class="flex flex-col items-center justify-center h-full text-slate-400 opacity-50 space-y-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <p class="text-sm">Belum ada pesan. Mulai sapa teman!</p>
+             </div>
+        </div>
+
+        <div class="p-4 bg-white border-t">
+            <form id="chat-form" class="flex items-center gap-2">
+                <input type="text" id="message-input" placeholder="Tulis pesan..." class="flex-1 bg-slate-100 border-none rounded-full px-5 py-3 text-sm focus:ring-2 focus:ring-pink-500 outline-none" required autocomplete="off">
+                <button type="submit" class="bg-pink-500 hover:bg-pink-600 text-white p-3 rounded-full shadow-lg active:scale-95 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <div id="toast" class="absolute top-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-4 py-2 rounded-full opacity-0 pointer-events-none transition-all duration-300 transform scale-90 z-50">
+            Pesan terkirim!
+        </div>
+    </div>
+
+    <script>
+        const { Client, Databases, Account, ID, Query } = Appwrite;
+
+        // DATA SESUAI DASHBOARD KAMU (image_450530.png)
+        const PROJECT_ID = 'hat-public-123'; 
+        const ENDPOINT = 'https://sgp.cloud.appwrite.io/v1';
+        const DATABASE_ID = '69e7770f00194be02de4'; 
+        const COLLECTION_ID = 'publicchat'; 
+
+        const client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
+        const databases = new Databases(client);
+        const account = new Account(client);
+
+        const chatWindow = document.getElementById('chat-window');
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const statusText = document.getElementById('status-text');
+        const statusDot = document.getElementById('status-dot');
+        const emptyState = document.getElementById('empty-state');
+
+        let currentUser = null;
+
+        async function initApp() {
+            try {
+                // Mencoba mendapatkan user atau buat session anonim
+                try {
+                    currentUser = await account.get();
+                } catch {
+                    await account.createAnonymousSession();
+                    currentUser = await account.get();
+                }
+                
+                statusText.innerText = "Online";
+                statusText.className = "text-xs text-green-600 font-semibold";
+                statusDot.className = "w-2 h-2 bg-green-500 rounded-full animate-pulse";
+                
+                loadMessages();
+                subscribeMessages();
+            } catch (error) {
+                console.error("Gagal inisialisasi:", error);
+                statusText.innerText = "Koneksi Bermasalah";
+                statusDot.className = "w-2 h-2 bg-red-500 rounded-full";
+                showToast("Cek koneksi internet atau Project ID", true);
+            }
+        }
+
+        async function loadMessages() {
+            try {
+                const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+                    Query.orderAsc('$createdAt'),
+                    Query.limit(50)
+                ]);
+                
+                if (response.documents.length > 0) {
+                    if(emptyState) emptyState.style.display = 'none';
+                    chatWindow.innerHTML = '';
+                    response.documents.forEach(renderMessage);
+                    scrollToBottom();
+                }
+            } catch (error) {
+                console.warn("Gagal load data. Pastikan Permissions di Dashboard sudah diatur ke 'Any'.");
+            }
+        }
+
+        function subscribeMessages() {
+            client.subscribe(`databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`, response => {
+                if (response.events.includes("databases.*.collections.*.documents.*.create")) {
+                    if (emptyState) emptyState.style.display = 'none';
+                    renderMessage(response.payload);
+                    scrollToBottom();
+                }
+            });
+        }
+
+        function renderMessage(msg) {
+            const isMe = msg.userId === currentUser.$id;
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${isMe ? 'justify-end' : 'justify-start'} w-full animate-fade-in mb-4`;
+            
+            const time = new Date(msg.$createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            messageDiv.innerHTML = `
+                <div class="max-w-[85%] ${isMe ? 'bg-pink-500 text-white rounded-l-2xl rounded-tr-2xl' : 'bg-white text-slate-800 rounded-r-2xl rounded-tl-2xl'} p-3 shadow-sm border border-slate-100">
+                    ${!isMe ? `<p class="text-[10px] font-bold mb-1 text-pink-500 uppercase tracking-wider">${msg.username}</p>` : ''}
+                    <p class="text-sm leading-relaxed">${msg.text}</p>
+                    <p class="text-[9px] mt-1 opacity-60 text-right italic">${time}</p>
+                </div>
+            `;
+            chatWindow.appendChild(messageDiv);
+        }
+
+        chatForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            try {
+                const inputVal = text;
+                messageInput.value = '';
+                
+                await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
+                    text: inputVal,
+                    userId: currentUser.$id,
+                    username: 'User-' + currentUser.$id.substring(0,4)
+                });
+                
+                showToast("Pesan dikirim!");
+            } catch (error) {
+                console.error("Gagal kirim:", error);
+                showToast("Gagal kirim! Cek Atribut/Permissions", true);
+                messageInput.value = text;
+            }
+        };
+
+        function scrollToBottom() {
+            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#1e293b';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) scale(1)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) scale(0.9)';
+            }, 2500);
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>

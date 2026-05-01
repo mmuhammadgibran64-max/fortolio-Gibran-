@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIBRAN DRIVE - Daftar</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .form-container {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 360px;
+    }
+    h2 { text-align: center; color: #22c55e; margin-bottom: 25px; font-size: 24px; letter-spacing: -1px; }
+    label { display: block; margin-top: 15px; font-size: 13px; font-weight: 600; color: #94a3b8; }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: white;
+      box-sizing: border-box;
+      outline: none;
+    }
+    input:focus { border-color: #22c55e; }
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 14px;
+      background: #22c55e;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    button:hover { background: #16a34a; transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    .toggle {
+      margin-top: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #facc15;
+      text-align: right;
+    }
+    .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #64748b; }
+    .footer a { color: #22c55e; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Daftar Akun</h2>
+    <form id="registerForm">
+      <label>NAMA LENGKAP</label>
+      <input type="text" id="nama" placeholder="Contoh: Gibran Alfarizi" required>
+
+      <label>NOMOR HANDPHONE</label>
+      <input type="tel" id="hp" placeholder="0812xxxxxxxx" required>
+
+      <label>EMAIL</label>
+      <input type="email" id="email" placeholder="gibran@mail.com" required>
+
+      <label>KATA SANDI</label>
+      <input type="password" id="password" placeholder="••••••••" required>
+      <div class="toggle" onclick="togglePassword()">👁️ Lihat/Sembunyikan Password</div>
+
+      <button type="submit">Buat Akun</button>
+    </form>
+    <div class="footer">
+      Sudah punya akun? <a href="dashboard.html">Login ke Dashboard</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBQhrxEcpxXwENnTwr-QUGpRUGLHSmDqaY",
+      authDomain: "daftar-akun-21981.firebaseapp.com",
+      databaseURL: "https://daftar-akun-21981-default-rtdb.firebaseio.com",
+      projectId: "daftar-akun-21981",
+      storageBucket: "daftar-akun-21981.firebasestorage.app",
+      messagingSenderId: "1010462720549",
+      appId: "1:1010462720549:web:4495e6de27ef942b2a35cc"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.togglePassword = function() {
+      const passField = document.getElementById("password");
+      passField.type = passField.type === "password" ? "text" : "password";
+    }
+
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nama = document.getElementById("nama").value;
+      const hp = document.getElementById("hp").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        await set(ref(db, "users/" + Date.now()), {
+          nama, hp, email, password
+        });
+
+        localStorage.setItem('profile_active', JSON.stringify({
+          nama: nama,
+          peran: "Member Baru"
+        }));
+
+        alert("Berhasil! Akun kamu sudah terdaftar.");
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("Gagal daftar: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

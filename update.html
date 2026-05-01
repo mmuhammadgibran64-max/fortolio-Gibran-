@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIBRAN DRIVE - Processing...</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; overflow: hidden; }
+        .loader-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); width: 0%; transition: width 0.4s ease; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="w-full max-w-md text-center">
+        <div id="status-icon" class="mb-8 inline-block p-5 rounded-full bg-blue-500/10 text-blue-500 animate-bounce">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+        </div>
+
+        <h2 id="title" class="text-3xl font-black italic tracking-tighter mb-2">MEMPROSES DATA</h2>
+        <p id="subtitle" class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.3em] mb-10">Sinkronisasi dengan Server Gibran...</p>
+
+        <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden border border-white/10 mb-6">
+            <div id="progress" class="loader-bar"></div>
+        </div>
+
+        <div id="log-container" class="glass rounded-2xl p-4 text-left h-32 overflow-hidden">
+            <div id="log-content" class="text-[9px] font-mono opacity-50 space-y-1">
+                <!-- Log akan muncul di sini -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get('type') || 'system';
+        
+        const titleEl = document.getElementById('title');
+        const progressEl = document.getElementById('progress');
+        const logContent = document.getElementById('log-content');
+
+        const logsData = {
+            system: ["Checking version...", "Downloading v.2.3.4...", "Applying patches...", "Rebooting core...", "System Updated!"],
+            data: ["Connecting Supabase...", "Fetching storage info...", "Clearing cache...", "Data Synced!"],
+            profil: ["Saving full name...", "Updating WhatsApp...", "Writing bio...", "Profile Updated!"]
+        };
+
+        const activeLogs = logsData[type] || logsData.system;
+        titleEl.innerText = type === 'profil' ? "SYNC PROFIL" : (type === 'data' ? "UPDATE DATA" : "UPDATE SISTEM");
+
+        let currentStep = 0;
+        function runUpdate() {
+            if (currentStep < activeLogs.length) {
+                const p = document.createElement('p');
+                p.innerText = `> ${activeLogs[currentStep]}`;
+                logContent.appendChild(p);
+                
+                const percent = ((currentStep + 1) / activeLogs.length) * 100;
+                progressEl.style.width = percent + '%';
+                
+                currentStep++;
+                setTimeout(runUpdate, 800);
+            } else {
+                // Simpan status ke localStorage agar di pengaturan berubah
+                localStorage.setItem('last_update', new Date().toLocaleTimeString());
+                localStorage.setItem('system_status', 'Updated');
+                
+                setTimeout(() => {
+                    window.location.href = 'pengaturan.html';
+                }, 1000);
+            }
+        }
+
+        window.onload = runUpdate;
+    </script>
+</body>
+</html>
