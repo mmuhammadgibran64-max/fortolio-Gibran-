@@ -92,7 +92,6 @@
 <body>
 
     <div class="glass-card">
-        <!-- Perbaikan: Tombol kembali diarahkan ke dashboard.html -->
         <a href="dashboard.html" class="btn-back" title="Kembali ke Dashboard">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -150,10 +149,7 @@
             const issue = document.getElementById('issue').value;
             const submitBtn = document.getElementById('submitBtn');
 
-            // Nomor admin tujuan tetap sesuai instruksi sebelumnya
             const adminNumber = "6285123332018";
-
-            // Format pesan menggunakan \n untuk baris baru
             const message = `*HALO ADMIN GIBRAN DRIVE*\n` +
                             `----------------------------------------\n` +
                             `*Nama:* ${name}\n` +
@@ -165,29 +161,29 @@
                             `----------------------------------------\n` +
                             `_Pesan dikirim dari Formulir Web_`;
 
-            // Encode pesan dengan benar agar karakter khusus terbaca WhatsApp
             const encodedMessage = encodeURIComponent(message);
-
-            // Deteksi perangkat untuk menggunakan skema whatsapp:// yang lebih responsif di mobile
-            const isMobile = /iPhone|Android/i.test(navigator.userAgent);
             
-            // wa.me sering kali lebih stabil di berbagai browser daripada api.whatsapp.com
-            const waUrl = `https://wa.me/${adminNumber}?text=${encodedMessage}`;
+            // Mencoba skema URI WhatsApp langsung (whatsapp://)
+            // Jika gagal/tidak didukung, akan fallback ke wa.me setelah jeda singkat
+            const directWA = `whatsapp://send?phone=${adminNumber}&text=${encodedMessage}`;
+            const fallbackWA = `https://wa.me/${adminNumber}?text=${encodedMessage}`;
             
-            // Visual feedback pada tombol
             submitBtn.innerText = "MENGHUBUNGKAN...";
             submitBtn.disabled = true;
-            submitBtn.style.opacity = "0.7";
 
-            // Eksekusi pengalihan
+            // Logika Deteksi/Paksa Buka
+            const start = Date.now();
+            window.location.href = directWA;
+
             setTimeout(() => {
-                window.location.href = waUrl;
+                // Jika dalam 500ms halaman tidak berpindah (artinya skema whatsapp:// gagal), gunakan link web
+                if (Date.now() - start < 1000) {
+                    window.location.href = fallbackWA;
+                }
                 
-                // Reset tombol jika pengguna kembali ke halaman ini
                 setTimeout(() => {
                     submitBtn.innerText = "Kirim Sekarang";
                     submitBtn.disabled = false;
-                    submitBtn.style.opacity = "1";
                 }, 2000);
             }, 500);
         });
