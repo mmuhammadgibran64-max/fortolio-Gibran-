@@ -92,8 +92,8 @@
 <body>
 
     <div class="glass-card">
-        <!-- Perbaikan: Mengarahkan ke index.html sesuai struktur GitHub Anda -->
-        <a href="index.html" class="btn-back" title="Kembali ke Dashboard">
+        <!-- Perbaikan: Tombol kembali diarahkan ke dashboard.html -->
+        <a href="dashboard.html" class="btn-back" title="Kembali ke Dashboard">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -105,7 +105,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
             </div>
-            <h1 class="text-3xl font-black tracking-tighter">KONSULTASI</h1>
+            <h1 class="text-3xl font-black tracking-tighter text-white">KONSULTASI</h1>
             <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Tim Support Gibran Drive</p>
         </div>
 
@@ -150,9 +150,10 @@
             const issue = document.getElementById('issue').value;
             const submitBtn = document.getElementById('submitBtn');
 
+            // Nomor admin tujuan tetap sesuai instruksi sebelumnya
             const adminNumber = "6285123332018";
 
-            // Membuat format pesan
+            // Format pesan menggunakan \n untuk baris baru
             const message = `*HALO ADMIN GIBRAN DRIVE*\n` +
                             `----------------------------------------\n` +
                             `*Nama:* ${name}\n` +
@@ -164,36 +165,31 @@
                             `----------------------------------------\n` +
                             `_Pesan dikirim dari Formulir Web_`;
 
-            // Encode pesan untuk URL
+            // Encode pesan dengan benar agar karakter khusus terbaca WhatsApp
             const encodedMessage = encodeURIComponent(message);
 
-            // Perbaikan: Mencoba deteksi mobile untuk menggunakan whatsapp:// agar lebih cepat
+            // Deteksi perangkat untuk menggunakan skema whatsapp:// yang lebih responsif di mobile
             const isMobile = /iPhone|Android/i.test(navigator.userAgent);
-            const waUrl = isMobile 
-                ? `whatsapp://send?phone=${adminNumber}&text=${encodedMessage}`
-                : `https://web.whatsapp.com/send?phone=${adminNumber}&text=${encodedMessage}`;
             
-            // Fallback jika whatsapp:// tidak didukung atau di Desktop
-            const fallbackUrl = `https://wa.me/${adminNumber}?text=${encodedMessage}`;
-
-            submitBtn.innerText = "MENGALIHKAN...";
+            // wa.me sering kali lebih stabil di berbagai browser daripada api.whatsapp.com
+            const waUrl = `https://wa.me/${adminNumber}?text=${encodedMessage}`;
+            
+            // Visual feedback pada tombol
+            submitBtn.innerText = "MENGHUBUNGKAN...";
             submitBtn.disabled = true;
-            
-            // Mencoba membuka URL utama, jika gagal setelah 1 detik, gunakan fallback
-            const startTime = Date.now();
-            window.location.href = waUrl;
+            submitBtn.style.opacity = "0.7";
 
+            // Eksekusi pengalihan
             setTimeout(() => {
-                if (Date.now() - startTime < 1500) {
-                    window.location.href = fallbackUrl;
-                }
-            }, 1000);
-
-            // Reset tombol setelah 3 detik
-            setTimeout(() => {
-                submitBtn.innerText = "Kirim Sekarang";
-                submitBtn.disabled = false;
-            }, 3000);
+                window.location.href = waUrl;
+                
+                // Reset tombol jika pengguna kembali ke halaman ini
+                setTimeout(() => {
+                    submitBtn.innerText = "Kirim Sekarang";
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = "1";
+                }, 2000);
+            }, 500);
         });
     </script>
 </body>
