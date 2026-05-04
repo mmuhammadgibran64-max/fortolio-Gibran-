@@ -74,6 +74,26 @@
         .btn-float:hover {
             transform: scale(1.1) rotate(5deg);
         }
+
+        /* Tooltip style */
+        .tooltip {
+            position: absolute;
+            right: 75px;
+            background: white;
+            color: black;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        .btn-float:hover .tooltip {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-10">
@@ -136,20 +156,23 @@
     </main>
 
     <div class="floating-btns">
-        <a href="lokasi.html" class="btn-float glass bg-indigo-600 text-white border-indigo-400/30 group" title="Lokasi Jakarta">
+        <a href="lokasi.html" class="btn-float glass bg-indigo-600 text-white border-indigo-400/30 relative" title="Lokasi Jakarta">
+            <span class="tooltip">Lokasi Pelacakan</span>
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
         </a>
-        <a href="pengaturan.html" class="btn-float glass bg-gray-800 text-white border-white/10 group" title="Pengaturan">
+        <a href="pengaturan.html" class="btn-float glass bg-gray-800 text-white border-white/10 relative" title="Pengaturan">
+            <span class="tooltip">Akun & Pin</span>
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
         </a>
-        <!-- Perubahan di sini: Menggunakan whatsapp:// agar langsung buka aplikasi -->
-        <a href="whatsapp://send?phone=6285123332018" class="btn-float glass bg-emerald-600 text-white border-emerald-400/30" title="Hubungi Admin">
+        <!-- FIXED: Mengarah ke halaman validasi PIN, bukan langsung WhatsApp -->
+        <a href="whatsapp-consultation.html" class="btn-float glass bg-emerald-600 text-white border-emerald-400/30 relative" title="Hubungi Admin">
+            <span class="tooltip">Hubungi Admin</span>
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.143c1.589.943 3.547 1.441 5.542 1.442 5.453 0 9.894-4.442 9.897-9.896.002-2.646-1.03-5.132-2.903-7.005-1.871-1.872-4.354-2.903-7.001-2.904-5.452 0-9.892 4.441-9.896 9.896-.001 2.015.51 3.984 1.479 5.762l-.934 3.415 3.516-.91z"/>
             </svg>
