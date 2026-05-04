@@ -3,248 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public Chat - Gibran Drive</title>
+    <title>Chat Public Icon - Gibran Drive</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: #050508;
-            color: #f1f5f9;
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0f0f14;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        
-        .glass-morphism {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
+
+        .main-container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .glass-card {
+            background: rgba(25, 25, 30, 0.8);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .chat-container {
-            height: calc(100vh - 180px);
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        .chat-area {
+            background: rgba(25, 25, 30, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
 
-        .chat-container::-webkit-scrollbar { width: 4px; }
-        .chat-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .message-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scrollbar-width: none;
+        }
+        .message-list::-webkit-scrollbar { display: none; }
 
-        .bubble-me {
-            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-            border-radius: 20px 20px 4px 20px;
-            box-shadow: 0 4px 15px rgba(219, 39, 119, 0.2);
+        .bubble {
+            max-width: 85%;
+            padding: 10px 16px;
+            border-radius: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+            animation: slideUp 0.3s ease-out forwards;
         }
 
         .bubble-other {
             background: rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .bubble-me {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            padding: 6px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .btn-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px 20px 20px 4px;
+            color: #94a3b8;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
 
-        .animate-pop {
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        .btn-icon:hover {
+            background: rgba(236, 72, 153, 0.2);
+            color: #ec4899;
+            border-color: #ec4899;
         }
 
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.9) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        .input-box {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 10px;
         }
 
-        .loader {
-            border: 2px solid rgba(255,255,255,0.1);
-            border-top: 2px solid #ec4899;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
+        input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 10px 16px;
+            color: white;
+            font-size: 13px;
+            outline: none;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input:focus { border-color: #ec4899; }
     </style>
 </head>
-<body class="h-screen flex items-center justify-center p-0 md:p-4">
+<body>
 
-    <div id="app" class="w-full max-w-2xl h-screen md:h-[800px] flex flex-col glass-morphism md:rounded-[2.5rem] shadow-2xl overflow-hidden relative">
-        
-        <!-- Header -->
-        <div class="p-6 border-b border-white/10 flex items-center justify-between bg-white/5">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-500/20 rotate-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+    <div class="main-container">
+        <!-- Header / Icon Bar -->
+        <div class="glass-card">
+            <div class="status-pill">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span class="text-[10px] font-extrabold text-green-500 uppercase tracking-widest">Online</span>
+            </div>
+
+            <div class="h-6 w-[1px] bg-white/10"></div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="handleAction('audio')" class="btn-icon" title="Telepon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
-                </div>
-                <div>
-                    <h2 class="font-extrabold text-xl tracking-tight">Public Chat</h2>
-                    <div class="flex items-center gap-2">
-                        <span id="status-dot" class="w-2 h-2 bg-gray-500 rounded-full"></span>
-                        <span id="status-text" class="text-xs text-gray-500 font-medium">Menghubungkan...</span>
-                    </div>
+                </button>
+                <button onclick="handleAction('video')" class="btn-icon" title="Video">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Area (New) -->
+        <div class="chat-area">
+            <div id="message-list" class="message-list">
+                <!-- Welcome Message -->
+                <div class="bubble bubble-other">
+                    Halo! Selamat datang di Chat Publik Gibran Drive. Silakan menyapa teman-teman lainnya di sini.
                 </div>
             </div>
 
-            <a href="dashboard.html" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-bold transition-all active:scale-95 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Dashboard
-            </a>
-        </div>
-
-        <!-- Chat Window -->
-        <div id="chat-window" class="flex-1 overflow-y-auto p-6 space-y-6 chat-container">
-            <!-- Empty State -->
-             <div id="empty-state" class="flex flex-col items-center justify-center h-full text-gray-600 space-y-4">
-                <div class="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                </div>
-                <p class="text-sm font-medium text-center">Selamat Datang di Obrolan Publik!<br><span class="text-xs font-normal opacity-50">Ketikan sesuatu untuk memulai diskusi.</span></p>
-             </div>
-        </div>
-
-        <!-- Input Area -->
-        <div class="p-6 bg-white/5 border-t border-white/10">
-            <form id="chat-form" class="flex items-center gap-3">
-                <input type="text" id="message-input" placeholder="Tulis pesan sesuatu..." 
-                    class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500/50 transition-all placeholder:text-gray-600" required autocomplete="off">
-                <button type="submit" id="send-btn" class="bg-pink-500 hover:bg-pink-600 text-white p-4 rounded-2xl shadow-lg shadow-pink-500/30 active:scale-95 transition-all disabled:opacity-50">
-                    <svg id="send-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <!-- Input Box -->
+            <form onsubmit="sendMessage(event)" class="input-box">
+                <input type="text" id="msg-input" placeholder="Tulis sesuatu..." autocomplete="off">
+                <button type="submit" class="w-10 h-10 bg-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-pink-500/20 active:scale-90 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
-                    <div id="send-loader" class="loader hidden"></div>
                 </button>
             </form>
         </div>
+    </div>
 
-        <!-- Toast -->
-        <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 bg-white text-black text-xs font-bold px-6 py-3 rounded-full opacity-0 pointer-events-none transition-all duration-500 z-50 shadow-2xl">
-            Pesan terkirim!
-        </div>
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-2.5 rounded-full text-[11px] font-bold shadow-2xl opacity-0 transition-all duration-300 pointer-events-none z-50">
+        Pesan terkirim
     </div>
 
     <script>
-        // URL API GOOGLE APPS SCRIPT BARU
         const API_URL = 'https://script.google.com/macros/s/AKfycbwoSB1GvqqiuRQuGT6TpUc55bjKI6wd7lESbzJ_k3SMth39mQFgQ7CpjY_LA9BsMIGgEQ/exec';
-        
-        // Identitas User Sederhana
-        let myId = localStorage.getItem('chat_user_id') || 'u_' + Math.random().toString(36).substr(2, 6);
-        localStorage.setItem('chat_user_id', myId);
+        let myId = localStorage.getItem('user_chat_id') || 'u' + Math.floor(Math.random()*1000);
+        localStorage.setItem('user_chat_id', myId);
 
-        const chatWindow = document.getElementById('chat-window');
-        const chatForm = document.getElementById('chat-form');
-        const messageInput = document.getElementById('message-input');
-        const statusText = document.getElementById('status-text');
-        const statusDot = document.getElementById('status-dot');
-        const emptyState = document.getElementById('empty-state');
-        const sendBtn = document.getElementById('send-btn');
-        const sendLoader = document.getElementById('send-loader');
-        const sendIcon = document.getElementById('send-icon');
-
-        let lastMessageCount = 0;
-
-        function init() {
-            statusText.innerText = "Online";
-            statusText.className = "text-xs text-green-500 font-bold uppercase tracking-widest";
-            statusDot.className = "w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]";
-            
-            loadMessages();
-            // Cek pesan baru setiap 4 detik
-            setInterval(loadMessages, 4000);
+        async function handleAction(type) {
+            showToast(`Memulai ${type === 'audio' ? 'Telepon' : 'Video'}...`);
         }
 
-        async function loadMessages() {
-            try {
-                const response = await fetch(`${API_URL}?action=read`);
-                const data = await response.json();
-                
-                if (data && data.length > 0) {
-                    if (data.length !== lastMessageCount) {
-                        emptyState.classList.add('hidden');
-                        chatWindow.innerHTML = '';
-                        data.forEach(msg => renderMessage(msg));
-                        scrollToBottom();
-                        lastMessageCount = data.length;
-                    }
-                }
-            } catch (e) {
-                console.log("Koneksi sedang sibuk...");
-            }
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('opacity-100', '-translate-y-4');
+            setTimeout(() => toast.classList.remove('opacity-100', '-translate-y-4'), 2500);
         }
 
-        function renderMessage(msg) {
-            const isMe = msg.userId === myId;
+        function renderMessage(text, isMe) {
+            const list = document.getElementById('message-list');
             const div = document.createElement('div');
-            div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} w-full animate-pop mb-1`;
-            
-            const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--';
-            
-            div.innerHTML = `
-                <div class="max-w-[85%] p-4 ${isMe ? 'bubble-me text-white' : 'bubble-other text-gray-200'}">
-                    ${!isMe ? `<p class="text-[10px] font-black mb-1 text-pink-400 uppercase tracking-tighter">${msg.username || 'Friend'}</p>` : ''}
-                    <p class="text-sm leading-relaxed">${msg.text}</p>
-                    <p class="text-[9px] mt-2 opacity-50 text-right font-medium">${time}</p>
-                </div>
-            `;
-            chatWindow.appendChild(div);
+            div.className = `bubble ${isMe ? 'bubble-me' : 'bubble-other'}`;
+            div.innerText = text;
+            list.appendChild(div);
+            list.scrollTop = list.scrollHeight;
         }
 
-        chatForm.onsubmit = async (e) => {
+        async function sendMessage(e) {
             e.preventDefault();
-            const text = messageInput.value.trim();
-            if (!text) return;
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim();
+            if(!text) return;
 
-            sendBtn.disabled = true;
-            sendIcon.classList.add('hidden');
-            sendLoader.classList.remove('hidden');
-
-            const payload = {
-                action: 'send',
-                userId: myId,
-                username: 'User-' + myId.substr(-4).toUpperCase(),
-                text: text,
-                timestamp: new Date().toISOString()
-            };
+            renderMessage(text, true);
+            input.value = '';
 
             try {
-                // Gunakan mode no-cors untuk POST ke AppScript
-                await fetch(API_URL, {
+                // Simulasi pengiriman ke GAS API Anda
+                fetch(`${API_URL}?action=send&text=${encodeURIComponent(text)}&userId=${myId}`, {
                     method: 'POST',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    mode: 'no-cors'
                 });
-
-                // Tampilkan langsung di layar agar responsif
-                emptyState.classList.add('hidden');
-                renderMessage(payload);
-                scrollToBottom();
-                
-                messageInput.value = '';
-                showToast("Pesan dikirim!");
-            } catch (error) {
-                showToast("Terjadi kesalahan jaringan", true);
-            } finally {
-                sendBtn.disabled = false;
-                sendIcon.classList.remove('hidden');
-                sendLoader.classList.add('hidden');
+            } catch(err) {
+                console.error("Gagal mengirim pesan");
             }
-        };
-
-        function scrollToBottom() {
-            chatWindow.scrollTo({ top: chatWindow.scrollHeight, behavior: 'smooth' });
         }
-
-        function showToast(m, isError = false) {
-            const t = document.getElementById('toast');
-            t.innerText = m;
-            t.style.backgroundColor = isError ? '#ef4444' : '#ffffff';
-            t.style.color = isError ? '#ffffff' : '#000000';
-            t.classList.add('opacity-100', 'translate-y-[-10px]');
-            setTimeout(() => {
-                t.classList.remove('opacity-100', 'translate-y-[-10px]');
-            }, 2500);
-        }
-
-        window.onload = init;
     </script>
 </body>
 </html>
