@@ -129,12 +129,21 @@
                     </div>
                 </div>
 
-                <!-- Simpan Button -->
-                <div class="flex justify-end gap-4">
-                    <button class="px-8 py-3 rounded-2xl font-bold hover:bg-white/5 transition-all">Batalkan</button>
-                    <button id="saveBtn" onclick="saveSettings()" class="px-8 py-3 rounded-2xl bg-white text-black font-bold hover:bg-blue-50 transition-all active:scale-95 shadow-xl flex items-center gap-2">
-                        <span id="btnText">Simpan Perubahan</span>
-                        <div id="btnLoader" class="loader hidden"></div>
+                <!-- Simpan Button Area -->
+                <div class="flex flex-col items-end gap-4">
+                    <div class="flex gap-4">
+                        <button class="px-8 py-3 rounded-2xl font-bold hover:bg-white/5 transition-all text-gray-400">Batalkan</button>
+                        <button id="saveBtn" onclick="saveSettings()" class="px-8 py-3 rounded-2xl bg-white text-black font-bold hover:bg-blue-50 transition-all active:scale-95 shadow-xl flex items-center gap-2">
+                            <span id="btnText">Simpan Perubahan</span>
+                            <div id="btnLoader" class="loader hidden"></div>
+                        </button>
+                    </div>
+                    
+                    <!-- Tombol Update Otomatis Baru -->
+                    <button id="updateBtn" onclick="autoUpdate()" class="w-full md:w-auto px-8 py-3 rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-600/30 font-bold hover:bg-blue-600 hover:text-white transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span id="updateBtnText">Update Otomatis</span>
+                        <div id="updateBtnLoader" class="loader hidden border-blue-400 border-top-white"></div>
                     </button>
                 </div>
 
@@ -150,15 +159,15 @@
     </div>
 
     <script>
-        // URL API Google Apps Script
+        // API URL
         const CONFIG_API = 'https://script.google.com/macros/s/AKfycbwsOTWrR8HRKFUG1HpvzdGCoDz4e_Z3FKVcJ2IskniO5RG6D-aj0UswZwPk1BXXt8NR/exec';
+        const UPDATE_API = 'https://script.google.com/macros/s/AKfycbz4ETbfZDsQhXoW0EM3e-aH5KNRR_bzGrgr4k3wjDjv5WHj_rdESn05sxNmjUW-WiDe/exec';
 
         async function saveSettings() {
             const saveBtn = document.getElementById('saveBtn');
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
 
-            // Data yang akan dikirim
             const settingsData = {
                 action: 'save_settings',
                 username: document.getElementById('username').value,
@@ -167,13 +176,11 @@
                 deleteConfirm: document.getElementById('deleteConfirm').checked
             };
 
-            // Status pemuatan
             saveBtn.disabled = true;
             btnText.innerText = "Menyimpan...";
             btnLoader.classList.remove('hidden');
 
             try {
-                // Mengirim data ke Google Apps Script
                 await fetch(CONFIG_API, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -181,16 +188,41 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(settingsData)
                 });
-
-                showToast("Pengaturan Berhasil Disimpan ke Cloud!");
+                showToast("Pengaturan Berhasil Disimpan!");
             } catch (error) {
                 console.error('Error:', error);
                 showToast("Gagal menghubungi server.");
             } finally {
-                // Reset status
                 saveBtn.disabled = false;
                 btnText.innerText = "Simpan Perubahan";
                 btnLoader.classList.add('hidden');
+            }
+        }
+
+        async function autoUpdate() {
+            const updateBtn = document.getElementById('updateBtn');
+            const updateBtnText = document.getElementById('updateBtnText');
+            const updateBtnLoader = document.getElementById('updateBtnLoader');
+
+            updateBtn.disabled = true;
+            updateBtnText.innerText = "Memeriksa Update...";
+            updateBtnLoader.classList.remove('hidden');
+
+            try {
+                // Menjalankan fetch ke API Update
+                await fetch(UPDATE_API, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache'
+                });
+                showToast("Sistem Berhasil Diperbarui!");
+            } catch (error) {
+                console.error('Error Update:', error);
+                showToast("Gagal menjalankan update otomatis.");
+            } finally {
+                updateBtn.disabled = false;
+                updateBtnText.innerText = "Update Otomatis";
+                updateBtnLoader.classList.add('hidden');
             }
         }
 
