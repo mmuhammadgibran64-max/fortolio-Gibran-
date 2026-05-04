@@ -117,11 +117,10 @@
             </div>
         </div>
         <div class="glass p-6 rounded-3xl border-l-4 border-blue-500">
-            <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Menu Cepat</p>
-            <div class="flex gap-4">
-                <a href="chat-public-icon.html" class="text-blue-400 hover:text-blue-300 font-bold text-sm transition-all">Chat</a>
-                <span class="text-white/10">|</span>
-                <a href="pengaturan.html" class="text-blue-400 hover:text-blue-300 font-bold text-sm transition-all">Pengaturan</a>
+            <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Lokasi Pemantauan</p>
+            <div class="flex items-center justify-between">
+                <p class="text-white font-bold">DKI Jakarta</p>
+                <a href="lokasi.html" class="text-blue-400 hover:underline text-xs font-bold">Lihat Peta →</a>
             </div>
         </div>
     </div>
@@ -142,6 +141,13 @@
 
     <!-- Floating Buttons Container -->
     <div class="floating-btns">
+        <!-- Lokasi -->
+        <a href="lokasi.html" class="btn-float glass bg-indigo-600 text-white border-indigo-400/30 group" title="Lokasi Jakarta">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+        </a>
         <!-- Pengaturan -->
         <a href="pengaturan.html" class="btn-float glass bg-gray-800 text-white border-white/10 group" title="Pengaturan">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,14 +155,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
         </a>
-        <!-- Chat Publik -->
-        <a href="chat-public-icon.html" class="btn-float glass bg-blue-600 text-white border-blue-400/30 group" title="Chat Publik">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
-            </svg>
-        </a>
         <!-- WhatsApp -->
-        <a href="whatsapp-consultation.html" class="btn-float glass bg-emerald-600 text-white border-emerald-400/30" title="Konsultasi WA">
+        <a href="https://wa.me/6281234567890" target="_blank" class="btn-float glass bg-emerald-600 text-white border-emerald-400/30" title="Hubungi Admin">
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.143c1.589.943 3.547 1.441 5.542 1.442 5.453 0 9.894-4.442 9.897-9.896.002-2.646-1.03-5.132-2.903-7.005-1.871-1.872-4.354-2.903-7.001-2.904-5.452 0-9.892 4.441-9.896 9.896-.001 2.015.51 3.984 1.479 5.762l-.934 3.415 3.516-.91z"/>
             </svg>
@@ -164,7 +164,7 @@
     </div>
 
     <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 opacity-0 translate-y-10 transition-all duration-500 z-50">
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 opacity-0 translate-y-10 transition-all duration-500 z-50 pointer-events-none">
         <div class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-2xl" id="toast-msg">
             Pesan Sistem
         </div>
@@ -217,7 +217,7 @@
                              </button>
                         </div>
                     </div>
-                    <h3 class="text-xs font-bold truncate px-2">${f.name}</h3>
+                    <h3 class="text-xs font-bold truncate px-2 text-center">${f.name}</h3>
                 `;
                 grid.appendChild(card);
             });
@@ -232,14 +232,19 @@
             reader.onload = async (ev) => {
                 const base64 = ev.target.result.split(',')[1];
                 try {
-                    await fetch(FILE_API, {
+                    const response = await fetch(FILE_API, {
                         method: 'POST',
                         body: JSON.stringify({ action: 'upload', name: file.name, mimeType: file.type, base64 })
                     });
-                    showToast("Upload Berhasil!");
-                    loadData();
+                    const result = await response.json();
+                    if(result.status === 'success') {
+                        showToast("Upload Berhasil!");
+                        loadData();
+                    } else {
+                        showToast("Gagal: " + result.message);
+                    }
                 } catch (err) {
-                    showToast("Upload Gagal.");
+                    showToast("Koneksi Error.");
                 } finally {
                     setLoading(false);
                 }
@@ -248,14 +253,19 @@
         };
 
         async function deleteFile(id) {
-            if (!confirm("Hapus file permanen?")) return;
+            const customConfirm = confirm("Hapus file permanen?");
+            if (!customConfirm) return;
+            
             try {
-                await fetch(FILE_API, {
+                const response = await fetch(FILE_API, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'delete', fileId: id })
                 });
-                showToast("File Dihapus.");
-                loadData();
+                const result = await response.json();
+                if(result.status === 'success') {
+                    showToast("File Berhasil Dihapus.");
+                    loadData();
+                }
             } catch (err) {
                 showToast("Gagal menghapus.");
             }
@@ -266,14 +276,17 @@
             document.getElementById('upload-icon').classList.toggle('hidden', s);
             document.getElementById('upload-text').innerText = s ? "Mengunggah..." : "Upload File";
             document.getElementById('upload-btn').disabled = s;
+            document.getElementById('upload-btn').style.opacity = s ? "0.7" : "1";
         }
 
         function showToast(m) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = m;
-            t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 opacity-100 translate-y-0 transition-all duration-500 z-50";
+            t.style.opacity = "1";
+            t.style.transform = "translate(-50%, 0)";
             setTimeout(() => {
-                t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 opacity-0 translate-y-10 transition-all duration-500 z-50";
+                t.style.opacity = "0";
+                t.style.transform = "translate(-50%, 20px)";
             }, 3000);
         }
 
