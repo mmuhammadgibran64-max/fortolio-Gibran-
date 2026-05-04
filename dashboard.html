@@ -46,7 +46,6 @@
             100% { transform: rotate(360deg); } 
         }
 
-        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
@@ -79,7 +78,6 @@
 </head>
 <body class="min-h-screen p-4 md:p-10">
 
-    <!-- Header Section -->
     <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
         <div class="flex items-center gap-4">
             <div class="w-14 h-14 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
@@ -103,7 +101,6 @@
         </div>
     </header>
 
-    <!-- Stats Section -->
     <div class="max-w-6xl mx-auto mb-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div class="glass p-6 rounded-3xl">
             <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total File</p>
@@ -125,7 +122,6 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <main class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-8">
             <h2 class="text-lg font-bold text-gray-400 uppercase tracking-widest">Koleksi File</h2>
@@ -139,31 +135,27 @@
         </div>
     </main>
 
-    <!-- Floating Buttons Container -->
     <div class="floating-btns">
-        <!-- Lokasi -->
         <a href="lokasi.html" class="btn-float glass bg-indigo-600 text-white border-indigo-400/30 group" title="Lokasi Jakarta">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
         </a>
-        <!-- Pengaturan -->
         <a href="pengaturan.html" class="btn-float glass bg-gray-800 text-white border-white/10 group" title="Pengaturan">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
         </a>
-        <!-- WhatsApp -->
-        <a href="https://wa.me/6281234567890" target="_blank" class="btn-float glass bg-emerald-600 text-white border-emerald-400/30" title="Hubungi Admin">
+        <!-- Perubahan di sini: Menggunakan whatsapp:// agar langsung buka aplikasi -->
+        <a href="whatsapp://send?phone=6285123332018" class="btn-float glass bg-emerald-600 text-white border-emerald-400/30" title="Hubungi Admin">
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.143c1.589.943 3.547 1.441 5.542 1.442 5.453 0 9.894-4.442 9.897-9.896.002-2.646-1.03-5.132-2.903-7.005-1.871-1.872-4.354-2.903-7.001-2.904-5.452 0-9.892 4.441-9.896 9.896-.001 2.015.51 3.984 1.479 5.762l-.934 3.415 3.516-.91z"/>
             </svg>
         </a>
     </div>
 
-    <!-- Notification Toast -->
     <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 opacity-0 translate-y-10 transition-all duration-500 z-50 pointer-events-none">
         <div class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-2xl" id="toast-msg">
             Pesan Sistem
@@ -177,11 +169,9 @@
             try {
                 const res = await fetch(FILE_API);
                 const files = await res.json();
-                
                 document.getElementById('status-db').innerText = "Terhubung";
                 document.getElementById('status-db').className = "text-xl font-bold text-blue-400 italic";
                 document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-blue-400";
-                
                 renderFiles(files);
             } catch (err) {
                 document.getElementById('status-db').innerText = "Gagal";
@@ -194,17 +184,14 @@
             const grid = document.getElementById('file-grid');
             document.getElementById('stat-count').innerText = files.length;
             grid.innerHTML = '';
-
             if (files.length === 0) {
                 grid.innerHTML = `<div class="col-span-full py-10 text-center text-gray-700 font-bold">Belum ada file di cloud.</div>`;
                 return;
             }
-
             files.forEach(f => {
                 const card = document.createElement('div');
                 card.className = "glass p-4 rounded-[2rem] card-anim group relative overflow-hidden";
                 const isImg = ['jpg', 'png', 'jpeg', 'webp'].includes(f.format?.toLowerCase());
-                
                 card.innerHTML = `
                     <div class="aspect-square rounded-[1.5rem] bg-black/40 mb-4 overflow-hidden flex items-center justify-center">
                         ${isImg ? `<img src="${f.viewUrl}" class="w-full h-full object-cover">` : `<span class="text-2xl font-black opacity-20 uppercase">${f.format}</span>`}
@@ -226,7 +213,6 @@
         document.getElementById('file-input').onchange = async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
             setLoading(true);
             const reader = new FileReader();
             reader.onload = async (ev) => {
@@ -253,9 +239,7 @@
         };
 
         async function deleteFile(id) {
-            const customConfirm = confirm("Hapus file permanen?");
-            if (!customConfirm) return;
-            
+            if (!confirm("Hapus file permanen?")) return;
             try {
                 const response = await fetch(FILE_API, {
                     method: 'POST',
