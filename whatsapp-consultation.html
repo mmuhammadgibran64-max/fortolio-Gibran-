@@ -80,6 +80,7 @@
             padding: 0.5rem;
             border-radius: 0.75rem;
             border: 1px solid rgba(255,255,255,0.1);
+            z-index: 10;
         }
         .btn-back:hover { 
             color: white; 
@@ -91,8 +92,8 @@
 <body>
 
     <div class="glass-card">
-        <!-- Tombol Kembali ke Dashboard -->
-        <a href="dashboard.html" class="btn-back" title="Kembali ke Dashboard">
+        <!-- Perbaikan: Mengarahkan ke index.html sesuai struktur GitHub Anda -->
+        <a href="index.html" class="btn-back" title="Kembali ke Dashboard">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -129,7 +130,7 @@
                 <textarea id="issue" rows="4" class="input-field" placeholder="Tuliskan keluhan atau pertanyaan Anda secara detail..." required></textarea>
             </div>
 
-            <button type="submit" class="btn-send">
+            <button type="submit" class="btn-send" id="submitBtn">
                 Kirim Sekarang
             </button>
         </form>
@@ -147,29 +148,52 @@
             const phone = document.getElementById('phone').value;
             const pin = document.getElementById('pin').value;
             const issue = document.getElementById('issue').value;
+            const submitBtn = document.getElementById('submitBtn');
 
             const adminNumber = "6285123332018";
 
-            const message = `*HALO ADMIN GIBRAN DRIVE*%0A` +
-                            `----------------------------------------%0A` +
-                            `*Nama:* ${name}%0A` +
-                            `*No. HP:* ${phone}%0A` +
-                            `*PIN:* ${pin}%0A` +
-                            `----------------------------------------%0A` +
-                            `*KEBUTUHAN KONSULTASI:*%0A` +
-                            `${issue}%0A` +
-                            `----------------------------------------%0A` +
+            // Membuat format pesan
+            const message = `*HALO ADMIN GIBRAN DRIVE*\n` +
+                            `----------------------------------------\n` +
+                            `*Nama:* ${name}\n` +
+                            `*No. HP:* ${phone}\n` +
+                            `*PIN:* ${pin}\n` +
+                            `----------------------------------------\n` +
+                            `*KEBUTUHAN KONSULTASI:*\n` +
+                            `${issue}\n` +
+                            `----------------------------------------\n` +
                             `_Pesan dikirim dari Formulir Web_`;
 
-            const waUrl = `https://wa.me/${adminNumber}?text=${message}`;
+            // Encode pesan untuk URL
+            const encodedMessage = encodeURIComponent(message);
+
+            // Perbaikan: Mencoba deteksi mobile untuk menggunakan whatsapp:// agar lebih cepat
+            const isMobile = /iPhone|Android/i.test(navigator.userAgent);
+            const waUrl = isMobile 
+                ? `whatsapp://send?phone=${adminNumber}&text=${encodedMessage}`
+                : `https://web.whatsapp.com/send?phone=${adminNumber}&text=${encodedMessage}`;
             
-            const btn = e.target.querySelector('button');
-            btn.innerText = "MENGALIHKAN...";
-            btn.style.opacity = "0.7";
+            // Fallback jika whatsapp:// tidak didukung atau di Desktop
+            const fallbackUrl = `https://wa.me/${adminNumber}?text=${encodedMessage}`;
+
+            submitBtn.innerText = "MENGALIHKAN...";
+            submitBtn.disabled = true;
             
+            // Mencoba membuka URL utama, jika gagal setelah 1 detik, gunakan fallback
+            const startTime = Date.now();
+            window.location.href = waUrl;
+
             setTimeout(() => {
-                window.location.href = waUrl;
-            }, 800);
+                if (Date.now() - startTime < 1500) {
+                    window.location.href = fallbackUrl;
+                }
+            }, 1000);
+
+            // Reset tombol setelah 3 detik
+            setTimeout(() => {
+                submitBtn.innerText = "Kirim Sekarang";
+                submitBtn.disabled = false;
+            }, 3000);
         });
     </script>
 </body>
