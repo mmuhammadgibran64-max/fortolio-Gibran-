@@ -69,7 +69,7 @@
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 bg-pink-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-pink-500/20 rotate-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 application/json-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
                     </svg>
                 </div>
                 <div>
@@ -96,7 +96,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                 </div>
-                <p class="text-sm font-medium">Belum ada obrolan di sini.</p>
+                <p class="text-sm font-medium text-center">Selamat Datang di Obrolan Publik!<br><span class="text-xs font-normal opacity-50">Ketikan sesuatu untuk memulai diskusi.</span></p>
              </div>
         </div>
 
@@ -121,11 +121,11 @@
     </div>
 
     <script>
-        // URL API Google Apps Script Anda
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyzaI67FHgmX0saRDEyPijn5IWVLT8lSuadYUO3u3NDymhY8YKgpcCb9c6NhX-gdhgyOw/exec';
+        // URL API GOOGLE APPS SCRIPT BARU
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwoSB1GvqqiuRQuGT6TpUc55bjKI6wd7lESbzJ_k3SMth39mQFgQ7CpjY_LA9BsMIGgEQ/exec';
         
-        // Identitas User Sederhana (Random / dari LocalStorage)
-        let myId = localStorage.getItem('chat_user_id') || 'user_' + Math.floor(Math.random() * 10000);
+        // Identitas User Sederhana
+        let myId = localStorage.getItem('chat_user_id') || 'u_' + Math.random().toString(36).substr(2, 6);
         localStorage.setItem('chat_user_id', myId);
 
         const chatWindow = document.getElementById('chat-window');
@@ -138,48 +138,47 @@
         const sendLoader = document.getElementById('send-loader');
         const sendIcon = document.getElementById('send-icon');
 
-        // Fungsi Memulai
+        let lastMessageCount = 0;
+
         function init() {
-            statusText.innerText = "Terhubung";
-            statusText.classList.replace('text-gray-500', 'text-green-500');
-            statusDot.classList.replace('bg-gray-500', 'bg-green-500');
-            statusDot.classList.add('animate-pulse');
+            statusText.innerText = "Online";
+            statusText.className = "text-xs text-green-500 font-bold uppercase tracking-widest";
+            statusDot.className = "w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]";
             
-            // Polling Pesan setiap 5 detik (Karena No-Cors AppScript terbatas untuk real-time)
             loadMessages();
-            setInterval(loadMessages, 5000);
+            // Cek pesan baru setiap 4 detik
+            setInterval(loadMessages, 4000);
         }
 
         async function loadMessages() {
             try {
-                // Catatan: Mengambil data dari Apps Script biasanya butuh parameter action
                 const response = await fetch(`${API_URL}?action=read`);
                 const data = await response.json();
                 
                 if (data && data.length > 0) {
-                    emptyState.classList.add('hidden');
-                    const currentHTML = chatWindow.innerHTML;
-                    
-                    // Render ulang hanya jika ada perubahan jumlah pesan untuk efisiensi sederhana
-                    chatWindow.innerHTML = '';
-                    data.forEach(msg => renderMessage(msg));
-                    scrollToBottom();
+                    if (data.length !== lastMessageCount) {
+                        emptyState.classList.add('hidden');
+                        chatWindow.innerHTML = '';
+                        data.forEach(msg => renderMessage(msg));
+                        scrollToBottom();
+                        lastMessageCount = data.length;
+                    }
                 }
             } catch (e) {
-                console.log("Menunggu data...");
+                console.log("Koneksi sedang sibuk...");
             }
         }
 
         function renderMessage(msg) {
             const isMe = msg.userId === myId;
             const div = document.createElement('div');
-            div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} w-full animate-pop mb-2`;
+            div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} w-full animate-pop mb-1`;
             
             const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--';
             
             div.innerHTML = `
-                <div class="max-w-[80%] p-4 ${isMe ? 'bubble-me text-white' : 'bubble-other text-gray-200'}">
-                    ${!isMe ? `<p class="text-[10px] font-black mb-1 text-pink-400 uppercase tracking-tighter">${msg.username || 'Anonymous'}</p>` : ''}
+                <div class="max-w-[85%] p-4 ${isMe ? 'bubble-me text-white' : 'bubble-other text-gray-200'}">
+                    ${!isMe ? `<p class="text-[10px] font-black mb-1 text-pink-400 uppercase tracking-tighter">${msg.username || 'Friend'}</p>` : ''}
                     <p class="text-sm leading-relaxed">${msg.text}</p>
                     <p class="text-[9px] mt-2 opacity-50 text-right font-medium">${time}</p>
                 </div>
@@ -192,7 +191,6 @@
             const text = messageInput.value.trim();
             if (!text) return;
 
-            // UI State
             sendBtn.disabled = true;
             sendIcon.classList.add('hidden');
             sendLoader.classList.remove('hidden');
@@ -200,29 +198,30 @@
             const payload = {
                 action: 'send',
                 userId: myId,
-                username: 'User-' + myId.substring(5, 9),
+                username: 'User-' + myId.substr(-4).toUpperCase(),
                 text: text,
                 timestamp: new Date().toISOString()
             };
 
             try {
-                // Kirim ke Google Apps Script
+                // Gunakan mode no-cors untuk POST ke AppScript
                 await fetch(API_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                // Optimistic UI (Langsung tampilkan di layar)
+                // Tampilkan langsung di layar agar responsif
                 emptyState.classList.add('hidden');
                 renderMessage(payload);
                 scrollToBottom();
                 
                 messageInput.value = '';
-                showToast("Pesan dikirim ke publik!");
+                showToast("Pesan dikirim!");
             } catch (error) {
-                showToast("Gagal mengirim pesan.", true);
+                showToast("Terjadi kesalahan jaringan", true);
             } finally {
                 sendBtn.disabled = false;
                 sendIcon.classList.remove('hidden');
@@ -242,7 +241,7 @@
             t.classList.add('opacity-100', 'translate-y-[-10px]');
             setTimeout(() => {
                 t.classList.remove('opacity-100', 'translate-y-[-10px]');
-            }, 3000);
+            }, 2500);
         }
 
         window.onload = init;
