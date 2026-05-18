@@ -54,7 +54,7 @@
 
     <div class="max-w-5xl mx-auto">
         <!-- Navigasi Kembali -->
-        <a href="index.html" class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold mb-8 transition-all group">
+        <a href="dashboard.html" class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold mb-8 transition-all group">
             <svg class="w-6 h-6 transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
             </svg>
@@ -89,9 +89,9 @@
             </div>
             <div class="glass p-6 rounded-3xl border-l-4 border-indigo-500">
                 <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Node Status</h3>
-                <div class="flex items-center gap-2 text-emerald-500 font-bold">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <p class="text-xl">Aktif & Optimal</p>
+                <div class="flex items-center gap-2 font-bold" id="status-container">
+                    <div id="status-dot" class="w-2.5 h-2.5 rounded-full bg-yellow-500 animate-pulse"></div>
+                    <p id="status-text" class="text-xl text-yellow-500">Mengecek Node...</p>
                 </div>
             </div>
             <div class="glass p-6 rounded-3xl border-l-4 border-white/20">
@@ -105,6 +105,9 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // Tautan API Google Apps Script baru untuk pelacakan integrasi lokasi
+        const LOCATION_API = 'https://script.google.com/macros/s/AKfycbz7O7TqkmsXedfkVOxX9G53lqzB300uew90K1-LYmdaUyhRC4N3t7qaIdq-VzJq59uLUg/exec';
+
         // Inisialisasi Peta Jakarta
         const map = L.map('map', {
             zoomControl: false
@@ -128,11 +131,34 @@
             </div>
         `, { className: 'custom-popup' }).openPopup();
 
+        // Fungsi mengecek status Server (API)
+        async function checkServerStatus() {
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const statusContainer = document.getElementById('status-container');
+
+            try {
+                const res = await fetch(LOCATION_API);
+                if (res.ok) {
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]";
+                    statusText.className = "text-xl text-emerald-500";
+                    statusText.innerText = "Aktif & Optimal";
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]";
+                statusText.className = "text-xl text-red-500";
+                statusText.innerText = "Koneksi Offline";
+            }
+        }
+
         // Fix rendering peta saat window load
         window.addEventListener('load', () => {
             setTimeout(() => {
                 map.invalidateSize();
             }, 400);
+            checkServerStatus();
         });
     </script>
 </body>
