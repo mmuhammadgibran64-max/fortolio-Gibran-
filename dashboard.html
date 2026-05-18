@@ -98,6 +98,7 @@
 </head>
 <body class="min-h-screen p-4 md:p-10">
 
+    <!-- Header Section -->
     <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
         <div class="flex items-center gap-4">
             <div class="w-14 h-14 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
@@ -121,6 +122,7 @@
         </div>
     </header>
 
+    <!-- Stats Section -->
     <div class="max-w-6xl mx-auto mb-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div class="glass p-6 rounded-3xl">
             <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total File</p>
@@ -129,8 +131,8 @@
         <div class="glass p-6 rounded-3xl">
             <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Status Server</p>
             <div class="flex items-center gap-2">
-                <div id="status-indicator" class="w-2 h-2 rounded-full bg-yellow-500"></div>
-                <p id="status-db" class="text-xl font-bold text-yellow-500 italic">Menghubungkan...</p>
+                <div id="status-indicator" class="w-2.5 h-2.5 rounded-full bg-yellow-500 transition-all duration-300"></div>
+                <p id="status-db" class="text-xl font-bold text-yellow-500 italic transition-all duration-300">Menghubungkan...</p>
             </div>
         </div>
         <div class="glass p-6 rounded-3xl border-l-4 border-blue-500">
@@ -142,6 +144,7 @@
         </div>
     </div>
 
+    <!-- Main Content -->
     <main class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-8">
             <h2 class="text-lg font-bold text-gray-400 uppercase tracking-widest">Koleksi File</h2>
@@ -155,7 +158,9 @@
         </div>
     </main>
 
+    <!-- FLOATING BUTTONS CONTAINER -->
     <div class="floating-btns">
+        <!-- Tombol Pelacakan Lokasi -->
         <a href="lokasi.html" class="btn-float glass bg-indigo-600 text-white border-indigo-400/30 relative" title="Lokasi Jakarta">
             <span class="tooltip">Lokasi Pelacakan</span>
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,6 +168,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
         </a>
+
+        <!-- Tombol Pengaturan Akun -->
         <a href="pengaturan.html" class="btn-float glass bg-gray-800 text-white border-white/10 relative" title="Pengaturan">
             <span class="tooltip">Akun & Pin</span>
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,15 +177,25 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
         </a>
-        <!-- FIXED: Mengarah ke halaman validasi PIN, bukan langsung WhatsApp -->
+
+        <!-- Tombol Konsultasi WhatsApp -->
         <a href="whatsapp-consultation.html" class="btn-float glass bg-emerald-600 text-white border-emerald-400/30 relative" title="Hubungi Admin">
             <span class="tooltip">Hubungi Admin</span>
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.143c1.589.943 3.547 1.441 5.542 1.442 5.453 0 9.894-4.442 9.897-9.896.002-2.646-1.03-5.132-2.903-7.005-1.871-1.872-4.354-2.903-7.001-2.904-5.452 0-9.892 4.441-9.896 9.896-.001 2.015.51 3.984 1.479 5.762l-.934 3.415 3.516-.91z"/>
             </svg>
         </a>
+
+        <!-- Tombol Chat Public Icon -->
+        <a href="chat-public-icon.html" class="btn-float glass bg-pink-600 text-white border-pink-400/30 relative" title="Chat Publik">
+            <span class="tooltip">Chat Publik</span>
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+            </svg>
+        </a>
     </div>
 
+    <!-- Notifikasi Toast -->
     <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 opacity-0 translate-y-10 transition-all duration-500 z-50 pointer-events-none">
         <div class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-2xl" id="toast-msg">
             Pesan Sistem
@@ -186,20 +203,40 @@
     </div>
 
     <script>
+        // Memakai URL Apps Script Anda yang valid untuk mengambil data cloud
         const FILE_API = 'https://script.google.com/macros/s/AKfycbzU0uOTokAefy8If_47UTn8mgHTv6w4exohMvsKZQlz6EE5lYLn-iDC0dzGnJW0X9Q6/exec';
 
         async function loadData() {
             try {
+                // Melakukan pemanggilan database
                 const res = await fetch(FILE_API);
+                if (!res.ok) throw new Error('Network response was not ok');
+                
                 const files = await res.json();
+                
+                // Jika sukses, ubah status indikator menjadi biru bersinar
                 document.getElementById('status-db').innerText = "Terhubung";
                 document.getElementById('status-db').className = "text-xl font-bold text-blue-400 italic";
-                document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-blue-400";
+                document.getElementById('status-indicator').className = "w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_10px_#2563eb] animate-pulse";
+                
                 renderFiles(files);
             } catch (err) {
+                console.error("Gagal menghubungkan ke cloud:", err);
+                
+                // Jika gagal, ubah status indikator menjadi merah bersinar
                 document.getElementById('status-db').innerText = "Gagal";
                 document.getElementById('status-db').className = "text-xl font-bold text-red-500 italic";
-                document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-red-500";
+                document.getElementById('status-indicator').className = "w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444]";
+                
+                const grid = document.getElementById('file-grid');
+                grid.innerHTML = `
+                    <div class="col-span-full py-10 text-center text-red-400 font-bold glass rounded-[2rem] p-6 max-w-lg mx-auto">
+                        <svg class="w-12 h-12 text-red-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        Hubungan cloud terputus. Pastikan deployment Google Apps Script diatur ke "Anyone" (Siapa saja).
+                    </div>
+                `;
             }
         }
 
@@ -207,10 +244,12 @@
             const grid = document.getElementById('file-grid');
             document.getElementById('stat-count').innerText = files.length;
             grid.innerHTML = '';
+            
             if (files.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-10 text-center text-gray-700 font-bold">Belum ada file di cloud.</div>`;
+                grid.innerHTML = `<div class="col-span-full py-10 text-center text-gray-500 font-bold">Belum ada file di cloud Gibran Drive.</div>`;
                 return;
             }
+            
             files.forEach(f => {
                 const card = document.createElement('div');
                 card.className = "glass p-4 rounded-[2rem] card-anim group relative overflow-hidden";
@@ -219,15 +258,15 @@
                     <div class="aspect-square rounded-[1.5rem] bg-black/40 mb-4 overflow-hidden flex items-center justify-center">
                         ${isImg ? `<img src="${f.viewUrl}" class="w-full h-full object-cover">` : `<span class="text-2xl font-black opacity-20 uppercase">${f.format}</span>`}
                         <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-3">
-                             <a href="${f.url}" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white text-black rounded-xl">
+                             <a href="${f.url}" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white text-black rounded-xl hover:scale-110 transition-transform">
                                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                              </a>
-                             <button onclick="deleteFile('${f.id}')" class="w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-xl">
+                             <button onclick="deleteFile('${f.id}')" class="w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-xl hover:scale-110 transition-transform">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                              </button>
                         </div>
                     </div>
-                    <h3 class="text-xs font-bold truncate px-2 text-center">${f.name}</h3>
+                    <h3 class="text-xs font-bold truncate px-2 text-center" title="${f.name}">${f.name}</h3>
                 `;
                 grid.appendChild(card);
             });
