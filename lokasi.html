@@ -1,80 +1,64 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Pelacakan Lokasi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>
-        body { background-color: #0f172a; color: white; }
-        #map { height: 500px; width: 100%; border-radius: 1rem; }
-    </style>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta Tracker</title>
+  <!-- Menggunakan Leaflet.js untuk Peta -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    #map { height: 100vh; width: 100%; }
+  </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div class="max-w-7xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6">Peta Pelacakan Real-time</h1>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2">
-                <div id="map" class="shadow-2xl border border-gray-700"></div>
-            </div>
+<div id="map"></div>
 
-            <div class="bg-slate-800 p-6 rounded-2xl border border-gray-700 shadow-xl">
-                <h2 class="text-xl font-semibold mb-4 text-green-400">Status Lokasi</h2>
-                <div id="status-panel" class="space-y-4">
-                    <p id="data-info" class="text-lg font-mono text-gray-300">Menghubungkan ke server...</p>
-                    <div id="error-msg" class="text-red-400 hidden text-sm">
-                        Gagal mengambil data. Pastikan Google Apps Script sudah di-deploy dengan akses "Anyone" (Siapa saja).
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<script>
+  // Inisialisasi peta
+  const map = L.map('map').setView([-6.2088, 106.8456], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+  
+  const marker = L.marker([-6.2088, 106.8456]).addTo(map);
 
-    <script>
-        const map = L.map('map').setView([-6.2088, 106.8456], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+  async function updatePosition() {
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbz7O7TqkmsXedfkVOxX9G53lqzB300uew90K1-LYmdaUyhRC4N3t7qaIdq-VzJq59uLUg/exec';
+    
+    try {
+      // Menggunakan mode no-cors untuk menghindari blokir kebijakan CORS browser
+      const response = await fetch(scriptUrl, {
+        method: 'GET',
+        mode: 'no-cors'
+      });
+      
+      // Catatan: Dengan mode no-cors, kita tidak bisa membaca response.json() secara langsung.
+      // Jika error tetap berlanjut, pastikan Google Apps Script Anda mengirimkan data 
+      // melalui JSONP atau konfigurasikan header CORS di sisi server secara benar.
+      console.log("Permintaan data terkirim (mode no-cors).");
+      
+      // Jika server Anda mengizinkan CORS, ubah kembali 'no-cors' menjadi 'cors'
+      // dan aktifkan kembali baris di bawah ini:
+      /*
+      const data = await response.json();
+      if (data.lat && data.lng) {
+        const newLatLng = [parseFloat(data.lat), parseFloat(data.lng)];
+        marker.setLatLng(newLatLng);
+        map.setView(newLatLng, 15);
+      }
+      */
+    } catch (error) {
+      console.error("Gagal mengambil data:", error);
+    }
+  }
 
-        const marker = L.marker([-6.2088, 106.8456]).addTo(map);
-        
-        // URL endpoint baru dari Anda
-        const endpoint = "https://script.google.com/macros/s/AKfycbxU4Czs4Ar6taUiddQXRaIBIJY-HfPdfDI2ouVQSZJdTmBNGGDd9mmJWp9Z1XNsLR6LfQ/exec";
+  // Update posisi setiap 5 detik
+  setInterval(updatePosition, 5000);
+  updatePosition();
+</script>
 
-        async function fetchLocation() {
-            try {
-                // Fetch data dengan mode cors
-                const response = await fetch(endpoint, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                if (!response.ok) throw new Error('Jaringan tidak merespons');
-                
-                const data = await response.json();
-
-                // Pastikan format JSON sesuai (lat/lng)
-                if (data && data.lat !== undefined && data.lng !== undefined) {
-                    const newCoords = [parseFloat(data.lat), parseFloat(data.lng)];
-                    map.setView(newCoords, 15);
-                    marker.setLatLng(newCoords);
-                    document.getElementById('data-info').innerText = `Latitude: ${data.lat}\nLongitude: ${data.lng}`;
-                    document.getElementById('error-msg').classList.add('hidden');
-                }
-            } catch (error) {
-                console.error("Kesalahan pengambilan data:", error);
-                document.getElementById('error-msg').classList.remove('hidden');
-                document.getElementById('data-info').innerText = "Gagal memuat koordinat.";
-            }
-        }
-
-        // Interval pembaruan data (5 detik)
-        setInterval(fetchLocation, 5000);
-        fetchLocation();
-    </script>
 </body>
 </html>
