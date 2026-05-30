@@ -64,7 +64,20 @@
                         <a href="https://script.google.com/macros/s/AKfycbznb2Xt7AuTRgd9dcMMV1sLkDs2mtqRA7bRZtEEHB6fxmHRgii8el9JZxGEf6xvPXFJ0g/exec" target="_blank" class="block w-full font-bold text-blue-400 hover:text-white transition-all">Log Aktivitas</a>
                         <p class="text-xs text-gray-500 mt-1">Mencatat: Tanggal/Waktu, Pengguna, Jenis Aktivitas, dan Objek Terkait.</p>
                     </div>
-                    <a href="#" class="block w-full font-bold text-green-400 hover:text-white transition-all">Ekspor Data</a>
+                    
+                    <!-- Opsi Ekspor Data Baru -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Ekspor Data</label>
+                        <select id="exportFormat" class="w-full px-5 py-3 rounded-xl input-glass mb-2">
+                            <option value="json">JSON (Data Terstruktur)</option>
+                            <option value="csv">CSV (Excel/Sheets)</option>
+                            <option value="zip">ZIP (Arsip Dokumen)</option>
+                        </select>
+                        <button onclick="handleExport()" class="w-full text-center font-bold text-green-400 hover:text-white transition-all bg-green-500/10 hover:bg-green-500/20 py-2 rounded-xl border border-green-500/20">
+                            Unduh Sekarang
+                        </button>
+                    </div>
+
                     <button onclick="clearCache()" class="flex items-center gap-3 font-bold text-red-400 hover:text-red-300 transition-all w-full pt-4 border-t border-white/5">Pembersih Cache</button>
                 </div>
             </div>
@@ -86,11 +99,11 @@
         document.getElementById('email').value = localStorage.getItem('gd_email') || '';
     };
 
-    function showToast(m) {
-        const t = document.getElementById('toast');
-        document.getElementById('toast-msg').innerText = m;
-        t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 opacity-100 translate-y-0 transition-all duration-500 z-50";
-        setTimeout(() => { t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 opacity-0 translate-y-10 transition-all duration-500 z-50"; }, 3000);
+    function handleExport() {
+        const format = document.getElementById('exportFormat').value;
+        showToast(`Mempersiapkan unduhan dalam format ${format.toUpperCase()}...`);
+        // Logika untuk download bisa ditambahkan di sini
+        console.log("Ekspor data dengan format: " + format);
     }
 
     function saveSettings() {
